@@ -147,6 +147,36 @@ else
 end
 ```
 
+### Rate Limiting Example
+
+Use the increment script when you need to atomically enforce a maximum count within a TTL window:
+
+```typescript
+import {
+  ATOMIC_INCREMENT_WITH_LIMIT_SCRIPT,
+  parseIncrementResult,
+  type IncrementResult,
+} from "blindrop-crypto";
+import { Redis } from "@upstash/redis";
+
+const redis = new Redis({ url: "...", token: "..." });
+
+const result = await redis.eval(
+  ATOMIC_INCREMENT_WITH_LIMIT_SCRIPT,
+  ["ratelimit:192.168.1.1"],
+  [10, 60]
+);
+
+const parsed: IncrementResult = parseIncrementResult(result);
+if (parsed === null) {
+  console.log("Counter missing or unavailable");
+} else if (parsed === -1) {
+  console.log("Rate limit exceeded");
+} else {
+  console.log(`Request count in current window: ${parsed}`);
+}
+```
+
 ## Security Model
 
 ### What's Protected
@@ -189,6 +219,7 @@ end
 | `ATOMIC_INCREMENT_WITH_LIMIT_SCRIPT` | Lua script for rate limiting |
 | `parseDecrementResult(result)` | Parse decrement script response |
 | `parseIncrementResult(result)` | Parse increment script response |
+| `IncrementResult` | Type alias for increment parser results |
 
 ### Error Classes
 
