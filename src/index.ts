@@ -24,6 +24,7 @@ export {
   parseDecrementResult,
   parseIncrementResult,
   type DecrementResult,
+  type IncrementResult,
   type LuaScriptError,
 } from "./atomic";
 

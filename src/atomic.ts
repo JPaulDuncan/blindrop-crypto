@@ -137,6 +137,11 @@ export interface DecrementResult<T> {
 }
 
 /**
+ * Helper type for the increment script result
+ */
+export type IncrementResult = number | null;
+
+/**
  * Error response from Lua scripts
  */
 export interface LuaScriptError {
@@ -220,7 +225,7 @@ export function parseDecrementResult<T>(
  * @returns The new count, or -1 if limit exceeded, or null for error responses
  * @throws {InvalidResultError} If the Lua script returned an error response
  */
-export function parseIncrementResult(result: unknown): number | null {
+export function parseIncrementResult(result: unknown): IncrementResult {
   if (result === null || result === undefined) {
     return null;
   }
